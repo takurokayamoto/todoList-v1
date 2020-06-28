@@ -4,10 +4,13 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("request");
 const https = require("https");
+const date = require(__dirname + "/date.js");
+
 const app = express();
 let items = [];
 let workItems = [];
 
+console.log(date.getDay());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -18,16 +21,7 @@ app.use(express.static("public"));
 app.set("view engine", "ejs");
 
 app.get("/", function (req, res) {
-    let today = new Date();
-    
-    let options = {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-    };
-
-    let day = today.toLocaleDateString("en-JP", options);
-
+    let day = date.getDate();
     //let currentDay = today.getDay();
     // var dayText = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     // var day = "";
@@ -36,8 +30,6 @@ app.get("/", function (req, res) {
     // } else {
     //     console.log(`There is something wrong with "CurrentDay" variable. Please check -> ` + currentDay);
     // }
-
-
 
     //EJS Code
     // <% if (kindOfDay === "Saturday" || kindOfDay === "Sunday") { %>
@@ -48,73 +40,45 @@ app.get("/", function (req, res) {
     //     <h2>Here is your to do list</h2>
     //     <% } %>
 
-
-
-    res.render("list", { listTitle: day, itemArray: items});
+    res.render("list", { listTitle: day, itemArray: items });
 });
 
-
-
-
-
-
-app.post("/", function(req, res){
+app.post("/", function (req, res) {
     const inputValue = req.body.btn;
-    const item = req.body.newItem
+    const item = req.body.newItem;
 
+    let day = date.getDate();
 
-    let today = new Date();
-    
-    let options = {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-    };
-   
-    let day = today.toLocaleDateString("en-JP", options);
-    
-    if (inputValue === "Work List"){
-        if (item != ""){
+    if (inputValue === "Work List") {
+        if (item != "") {
             workItems.push(item);
-            res.redirect("/work");  
+            res.redirect("/work");
         } else {
-            res.redirect("/work");  
+            res.redirect("/work");
         }
-        } else if (inputValue === "clear Work List") {
-            workItems = [];
-            res.redirect("/work");   
-        
-
-} else if (inputValue === day) {
-        if (item != ""){
+    } else if (inputValue === "clear Work List") {
+        workItems = [];
+        res.redirect("/work");
+    } else if (inputValue === day) {
+        if (item != "") {
             items.push(item);
-            res.redirect("/");  
+            res.redirect("/");
         } else {
-            res.redirect("/");  
-
+            res.redirect("/");
         }
-        
-} else if (inputValue === "clear " + day) {
+    } else if (inputValue === "clear " + day) {
         items = [];
         res.redirect("/");
-        
-
-    } 
+    }
 });
 
+app.get("/work", function (req, res) {
+    res.render("list", { listTitle: "Work List", itemArray: workItems });
+});
 
-    
-    
-
-
-app.get("/work", function (req, res) { 
-    res.render("list", {listTitle: "Work List", itemArray: workItems});
-
- });
-
-
-
-
+app.get("/about", function (req, res) {
+    res.render("about");
+});
 
 app.listen(3000, function () {
     console.log("server is running on 3000");
