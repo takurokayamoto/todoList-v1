@@ -28,28 +28,31 @@
         <link href="css/style.css" rel="stylesheet" />
     </head>
     <body>
-
-        <h1><%= kindOfDay %></h1>
-        
-        <ul>
-           <% for (var i = 0; i < itemArray.length; i++) { %>  
-            <li> <%=itemArray[i]%>  </li>   
-           <%  } %> 
-
-
-        </ul>
-        
-        <form action="/" method="post" class="">
-            <input type="text" name="newItem" id="">
-            <button name="btn" class="btn btn-lg btn-primary" type="submit" value="add">Add</button>
-            <button name="btn" class="btn btn-lg btn-warning" type="submit" add="clear">clear</button>
-
-        </form>
-
-   
-        
-
-        
+        <body>
+            <div class="box" id="heading">
+                <h1>Hi Tak</h1>
+                <h1> <%= listTitle %></h1>
+                <h2>Here is your todo list</h2>
+            </div>
+    
+            <div class="box">
+                <% for (var i = 0; i < itemArray.length; i++) { %>
+                <div class="item">
+                    <input type="checkbox" name="" id="">
+                        <p><%= itemArray[i] %></p>
+                </div>
+                <% } %>
+    
+                <form class="item" action="/" method="post">
+                    <input type="text" name="newItem" id="" placeholder="New item" autocomplete="off"/>
+                    <button name="btn" type="submit" class="" value="<%=listTitle%>">+</button>
+                    <button name="btn" type="submit" class="" value="clear <%=listTitle%>">-</button>
+                </form>
+            </div>
+    
+    
+            
+        </body>
     </body>
 
 

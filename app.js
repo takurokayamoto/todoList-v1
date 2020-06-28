@@ -5,24 +5,30 @@ const bodyParser = require("body-parser");
 const request = require("request");
 const https = require("https");
 const app = express();
-var items = [];
+let items = [];
+let workItems = [];
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
+
+//フォルダー・ファイルを使用できるようにする。
+//img | css など！
 app.use(express.static("public"));
+
 app.set("view engine", "ejs");
 
 app.get("/", function (req, res) {
-    var today = new Date();
+    let today = new Date();
     
-    var options = {
+    let options = {
         weekday: "long",
         day: "numeric",
         month: "long",
     };
 
-    var day = today.toLocaleDateString("en-JP", options);
+    let day = today.toLocaleDateString("en-JP", options);
 
-    //var currentDay = today.getDay();
+    //let currentDay = today.getDay();
     // var dayText = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     // var day = "";
     // if (currentDay < 7) {
@@ -44,24 +50,69 @@ app.get("/", function (req, res) {
 
 
 
-    res.render("list", { kindOfDay: day, itemArray: items});
+    res.render("list", { listTitle: day, itemArray: items});
 });
+
+
+
+
 
 
 app.post("/", function(req, res){
     const inputValue = req.body.btn;
-    if (inputValue === "add"){
-        var item = req.body.newItem;
-        items.push(item);
+    const item = req.body.newItem
+
+
+    let today = new Date();
     
-        res.redirect("/");
-    } else {
+    let options = {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+    };
+   
+    let day = today.toLocaleDateString("en-JP", options);
+    
+    if (inputValue === "Work List"){
+        if (item != ""){
+            workItems.push(item);
+            res.redirect("/work");  
+        } else {
+            res.redirect("/work");  
+        }
+        } else if (inputValue === "clear Work List") {
+            workItems = [];
+            res.redirect("/work");   
+        
+
+} else if (inputValue === day) {
+        if (item != ""){
+            items.push(item);
+            res.redirect("/");  
+        } else {
+            res.redirect("/");  
+
+        }
+        
+} else if (inputValue === "clear " + day) {
         items = [];
         res.redirect("/");
+        
 
-    }
-    
+    } 
 });
+
+
+    
+    
+
+
+app.get("/work", function (req, res) { 
+    res.render("list", {listTitle: "Work List", itemArray: workItems});
+
+ });
+
+
 
 
 
